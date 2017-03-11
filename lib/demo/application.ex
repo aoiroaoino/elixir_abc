@@ -12,7 +12,8 @@ defmodule Demo.Application do
     children = [
       # Starts a worker by calling: Demo.Worker.start_link(arg1, arg2, arg3)
       # worker(Demo.Worker, [arg1, arg2, arg3]),
-      worker(__MODULE__, [], function: :start_cowboy)
+      worker(__MODULE__, [], function: :start_cowboy),
+      supervisor(Phoenix.PubSub.PG2, [:chat_pubsub, []])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
@@ -25,6 +26,7 @@ defmodule Demo.Application do
     routes = [
       {"/", Demo.HelloHandler, []},
       {"/greet/:name", Demo.GreetHandler, []},
+      {"/websocket", Demo.WebSocketHandler, []},
       {"/static/[...]", :cowboy_static, {:priv_dir, :demo, "static_files"}}
     ]
     dispatch = :cowboy_router.compile([{:_, routes}])
